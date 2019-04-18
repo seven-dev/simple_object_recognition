@@ -1,48 +1,49 @@
-let net;
-let canv, ctx;
+let model;
+const canv = document.getElementById('canv');
+const ctx = canv.getContext('2d');
+const webcamElement = document.getElementById('webcam');
 
-async function app() {
-    canv = document.getElementById('canv');
-    ctx = canv.getContext('2d');
-    console.log('Loading coco-ssd..');
+async function loadModel(){
+    model = await cocoSsd.load();
+    //tf.loadGraphModel({ fromTFHub: true })
+}
 
-    // Load the model.
-    net = await cocoSsd.load();
-    console.log('Sucessfully loaded model');
-
-    await setupWebcam();
+async function main(){
     while (true) {
-        const result = await net.detect(webcamElement);
-        //console.log(result);
-        const prediction = result[0];
-        if (prediction !== undefined) {
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            result.forEach(draw);
-            //draw(prediction);
-            document.getElementById('console').innerText = `
-          prediction: ${result.map(a => a.class)}
+        const predictions = await model.detect(webcamElement);
+        drawPredictions(predictions);
+        document.getElementById('console').innerText = `
+          prediction: ${predictions.map(a => a.class)}
         `;
-        }
-
         // Give some breathing room by waiting for the next animation frame to
         // fire.
         await tf.nextFrame();
     }
 }
 
-function draw(prediction) {
-    //ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+async function app() {
+    console.log('Loading model...');
+    await loadModel();
+    console.log('Successfully loaded model');
+    await setupWebcam();
+    main();
+}
+
+function drawPredictions(predictions){
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    predictions.forEach(drawPrediction);
+}
+
+function drawPrediction(prediction) {
     const x = prediction.bbox[0];
     const y = prediction.bbox[1];
     const width = prediction.bbox[2];
     const height = prediction.bbox[3];
     // Draw the bounding box.
     ctx.strokeStyle = "#00FFFF";
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 1;
     ctx.strokeRect(x, y, width, height);
 }
-
-const webcamElement = document.getElementById('webcam');
 
 async function setupWebcam() {
     return new Promise((resolve, reject) => {
