@@ -1,0 +1,25 @@
+<html>
+
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #canv {
+            position: absolute;
+        }
+    </style>
+    <script src="./tfjs.min.js"></script>
+    <script src="./original-coco-ssd-model.min.js"></script>
+</head>
+
+<body>
+    <canvas id="canv" width="224" height="224"></canvas>
+    <video autoplay playsinline muted id="webcam" width="224" height="224"></video>
+    <div id="console"></div>
+    <script src="index.js"></script>
+</body>
+
+</html>

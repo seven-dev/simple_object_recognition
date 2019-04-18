@@ -5,6 +5,10 @@
 - Train a custom object recognition model
 - Have a demo running in the browser
 
+## Run the demo
+
+Open './demo/index.html' in the browser and it should work.
+
 ## Installation - To create/train the model
 
 ```sh
