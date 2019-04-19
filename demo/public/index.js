@@ -1,29 +1,54 @@
-let model;
+let detector;
 const canv = document.getElementById('canv');
 const ctx = canv.getContext('2d');
 const webcamElement = document.getElementById('webcam');
+//const MODEL_PATH = 'file:///tmp/mobilenet/model.json';
+//const MODEL_PATH = './my-model/model.json';
+const MODEL_PATH = 'https://0.0.0.0:3005/my-model/model.json';
 
-async function loadModel(){
-    model = await cocoSsd.load();
-    //tf.loadGraphModel({ fromTFHub: true })
+class ObjectDetector {
+    model;
+    constructor(){
+    }
+    async load(){
+        //this.model = await cocoSsd.load();
+        //this.model = await tf.loadGraphModel(MODEL_PATH);
+        this.model = await tf.loadLayersModel(MODEL_PATH);
+    }
+    async detect(frame){
+        console.log(detect2(frame));
+        return [{class: 'dog', bbox: [0,0,20,80]}];
+        //return await this.model.detect(frame);
+    }
+}
+
+function detect2(frame){
+    const batched = tf.tidy(() => {
+        frame = tf.browser.fromPixels(frame);
+        // Reshape to a single-element batch so we can pass it to executeAsync.
+        return frame.expandDims(0);
+    });
+    return batched;
 }
 
 async function main(){
     while (true) {
-        const predictions = await model.detect(webcamElement);
+        const predictions = await detector.detect(webcamElement);
         drawPredictions(predictions);
         document.getElementById('console').innerText = `
           prediction: ${predictions.map(a => a.class)}
         `;
         // Give some breathing room by waiting for the next animation frame to
         // fire.
-        await tf.nextFrame();
+        await new Promise((resolve, reject)=>{setTimeout(()=>resolve(), 10000)});
+        //await tf.nextFrame();
     }
 }
 
 async function app() {
+    detector = new ObjectDetector();
     console.log('Loading model...');
-    await loadModel();
+    await detector.load();
     console.log('Successfully loaded model');
     await setupWebcam();
     main();
