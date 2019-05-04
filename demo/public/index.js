@@ -5,7 +5,7 @@ const webcamElement = document.getElementById('webcam');
 //const MODEL_PATH = 'file:///tmp/mobilenet/model.json';
 //const MODEL_PATH = './my-model/model.json';
 
-const MODEL_PATH = 'https://0.0.0.0:3005/my-model3/model_config.json';
+const MODEL_PATH = 'https://0.0.0.0:3005/my-coco-model/model.json';
 class ObjectDetector {
     MODEL_PATH; model;
     constructor(MODEL_PATH){
