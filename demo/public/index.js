@@ -5,20 +5,20 @@ const webcamElement = document.getElementById('webcam');
 //const MODEL_PATH = 'file:///tmp/mobilenet/model.json';
 //const MODEL_PATH = './my-model/model.json';
 
-const MODEL_PATH = 'https://0.0.0.0:3005/my-coco-model/model.json';
+const MODEL_PATH = 'https://0.0.0.0:3005/coco-model/model.json';
 class ObjectDetector {
     MODEL_PATH; model;
     constructor(MODEL_PATH){
         this.MODEL_PATH = MODEL_PATH;
     }
     async load(){
-        //this.model = await cocoSsd.load();
+        this.model = await cocoSsd.load();
         //this.model = await tf.loadGraphModel(MODEL_PATH);
-        console.log('her1e');
+        //console.log('her1e');
         
         //this.model = await tf.loadLayersModel(this.MODEL_PATH);
-        this.model = await tf.loadGraphModel(this.MODEL_PATH);
-        console.log('her2e');
+        //this.model = await tf.loadGraphModel(this.MODEL_PATH);
+        //console.log('her2e');
 
     }
     async detect(frame){
